@@ -1,4 +1,5 @@
 """Consent, scoped tokens and an enforcing proxy for agent access to user accounts."""
+
 from __future__ import annotations
 
 import hashlib
@@ -6,13 +7,20 @@ import itertools
 import secrets
 from dataclasses import dataclass, field
 from datetime import datetime, timedelta
+from typing import ClassVar
 
 __all__ = ["Connector", "MockBank", "MockAirline", "MockStore", "Hub", "AccessError", "OP_SCOPES"]
 
 OP_SCOPES = {
-    "balances": "bank:read", "transactions": "bank:read", "transfer": "bank:transfer",
-    "search_flights": "airline:read", "book": "airline:book", "change_booking": "airline:book",
-    "order_status": "store:read", "checkout": "store:buy", "return_item": "store:buy",
+    "balances": "bank:read",
+    "transactions": "bank:read",
+    "transfer": "bank:transfer",
+    "search_flights": "airline:read",
+    "book": "airline:book",
+    "change_booking": "airline:book",
+    "order_status": "store:read",
+    "checkout": "store:buy",
+    "return_item": "store:buy",
 }
 MONEY_OPS = {"transfer", "book", "checkout", "change_booking"}
 
@@ -58,7 +66,10 @@ class MockBank(Connector):
 
 class MockAirline(Connector):
     kind = "airline"
-    FLIGHTS = [{"flight": "TP201", "from": "JFK", "to": "LIS", "price": 640}, {"flight": "TP203", "from": "JFK", "to": "LIS", "price": 520}]
+    FLIGHTS: ClassVar[tuple[dict, ...]] = (
+        {"flight": "TP201", "from": "JFK", "to": "LIS", "price": 640},
+        {"flight": "TP203", "from": "JFK", "to": "LIS", "price": 520},
+    )
 
     def __init__(self):
         self.bookings = {}
@@ -129,7 +140,18 @@ class Hub:
         self.links[lid] = {"user": user, "institution": institution, "account": account}
         return lid
 
-    def grant(self, user, agent, link_id, scopes, per_txn_cap=None, total_cap=None, payees=None, ttl=timedelta(days=30), now=None) -> str:
+    def grant(
+        self,
+        user,
+        agent,
+        link_id,
+        scopes,
+        per_txn_cap=None,
+        total_cap=None,
+        payees=None,
+        ttl=timedelta(days=30),
+        now=None,
+    ) -> str:
         link = self.links[link_id]
         if link["user"] != user:
             raise AccessError("link belongs to another user")
@@ -138,8 +160,17 @@ class Hub:
         if bad:
             raise AccessError(f"scopes {bad} don't apply to a {kind}")
         gid = f"grant-{next(self._ids)}"
-        self.grants[gid] = Grant(gid, user, agent, link_id, set(scopes), per_txn_cap, total_cap,
-                                 set(payees) if payees else None, (now or datetime.now()) + ttl)
+        self.grants[gid] = Grant(
+            gid,
+            user,
+            agent,
+            link_id,
+            set(scopes),
+            per_txn_cap,
+            total_cap,
+            set(payees) if payees else None,
+            (now or datetime.now()) + ttl,
+        )
         token = "ap_" + secrets.token_urlsafe(24)
         self.tokens[hashlib.sha256(token.encode()).hexdigest()] = gid
         return token
@@ -186,7 +217,18 @@ class Hub:
             if g.user != user:
                 continue
             link = self.links[g.link_id]
-            rows.append({"grant": g.grant_id, "agent": g.agent, "institution": link["institution"], "scopes": sorted(g.scopes),
-                         "spent": g.spent, "total_cap": g.total_cap, "expires": g.expires.isoformat(timespec="minutes"),
-                         "revoked": g.revoked, "calls": len(g.log), "denied": sum(1 for e in g.log if not e["allowed"])})
+            rows.append(
+                {
+                    "grant": g.grant_id,
+                    "agent": g.agent,
+                    "institution": link["institution"],
+                    "scopes": sorted(g.scopes),
+                    "spent": g.spent,
+                    "total_cap": g.total_cap,
+                    "expires": g.expires.isoformat(timespec="minutes"),
+                    "revoked": g.revoked,
+                    "calls": len(g.log),
+                    "denied": sum(1 for e in g.log if not e["allowed"]),
+                }
+            )
         return rows

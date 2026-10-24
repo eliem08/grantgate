@@ -1,5 +1,7 @@
 # agent-plaid
 
+[![CI](https://github.com/eliem08/agent-plaid/actions/workflows/ci.yml/badge.svg)](https://github.com/eliem08/agent-plaid/actions/workflows/ci.yml)
+
 > **Plaid for agents** — approved access to banks, airlines and stores.
 
 For an agent to pay a bill, rebook a flight or check an order, it needs
@@ -34,3 +36,25 @@ agent-plaid demo
 - Real connectors: open banking (PSD2 / FDX), airline NDC, Shopify / Amazon order APIs
 - Step-up approval: push notification for anything above a threshold
 - Signed receipts for each action (feeds agent-buyer-protection claims)
+
+## Development
+
+Zero runtime dependencies; Python 3.10+.
+
+```bash
+python -m venv .venv && source .venv/bin/activate   # Windows: .venv\Scripts\activate
+pip install -e ".[dev]"
+python -m unittest discover -s tests -t .           # unit + CLI smoke tests
+ruff check . && ruff format --check .               # lint + format
+```
+
+```
+agent_plaid/core.py       domain logic (pure, importable, fully tested)
+agent_plaid/__main__.py   CLI (`agent-plaid ...` / `python -m agent_plaid ...`)
+tests/                unit tests + generated CLI smoke tests
+```
+
+CI runs lint and tests on Ubuntu and Windows across Python 3.10, 3.12 and 3.13.
+Design, data model, trade-offs and production path: **[ARCHITECTURE.md](ARCHITECTURE.md)**.
+
+Part of the [agent-economy](https://github.com/eliem08/agent-economy) portfolio (idea #32).

@@ -13,11 +13,22 @@ def demo():
     hub.add_institution("ShopCo", MockStore())
     bank_link = hub.link("dana", "First Bank", "chk-001")
     air_link = hub.link("dana", "TAP Air", "FF123")
-    bills = hub.grant("dana", "bill-pay-agent", bank_link, ["bank:read", "bank:transfer"], per_txn_cap=200, total_cap=500, payees={"ConEd", "Verizon"})
+    bills = hub.grant(
+        "dana",
+        "bill-pay-agent",
+        bank_link,
+        ["bank:read", "bank:transfer"],
+        per_txn_cap=200,
+        total_cap=500,
+        payees={"ConEd", "Verizon"},
+    )
     travel = hub.grant("dana", "travel-agent", air_link, ["airline:read", "airline:book"], per_txn_cap=600)
     print("balance:", hub.call(bills, "balances"))
     print("pay ConEd:", hub.call(bills, "transfer", amount=120, payee="ConEd"))
-    for desc, kwargs in [("pay stranger", dict(amount=50, payee="Mallory")), ("big transfer", dict(amount=450, payee="Verizon"))]:
+    for desc, kwargs in [
+        ("pay stranger", dict(amount=50, payee="Mallory")),
+        ("big transfer", dict(amount=450, payee="Verizon")),
+    ]:
         try:
             hub.call(bills, "transfer", **kwargs)
         except AccessError as e:

@@ -14,8 +14,17 @@ class Tests(unittest.TestCase):
         self.hub.add_institution("Bank", self.bank)
         self.hub.add_institution("Store", MockStore())
         self.link = self.hub.link("u", "Bank", "a1")
-        self.tok = self.hub.grant("u", "agent", self.link, ["bank:read", "bank:transfer"], per_txn_cap=100, total_cap=150,
-                                  payees={"ConEd"}, ttl=timedelta(days=1), now=NOW)
+        self.tok = self.hub.grant(
+            "u",
+            "agent",
+            self.link,
+            ["bank:read", "bank:transfer"],
+            per_txn_cap=100,
+            total_cap=150,
+            payees={"ConEd"},
+            ttl=timedelta(days=1),
+            now=NOW,
+        )
 
     def test_read_and_transfer(self):
         self.assertEqual(self.hub.call(self.tok, "balances", now=NOW), {"available": 1000})
