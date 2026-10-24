@@ -1,0 +1,18 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "agent-plaid"
+version = "0.1.0"
+description = "Plaid for agents: approved access to banks, airlines and stores"
+readme = "README.md"
+requires-python = ">=3.10"
+license = {text = "MIT"}
+dependencies = []
+
+[project.scripts]
+agent-plaid = "agent_plaid.__main__:main"
+
+[tool.setuptools]
+packages = ["agent_plaid"]
