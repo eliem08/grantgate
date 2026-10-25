@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import hashlib
 import itertools
+import math
 import secrets
 from dataclasses import dataclass, field
 from datetime import datetime, timedelta
@@ -196,8 +197,14 @@ class Hub:
         need = OP_SCOPES.get(op)
         if not need or need not in g.scopes:
             deny(f"scope {need} not granted")
-        amount = float(params.get("amount", 0))
+        try:
+            amount = float(params.get("amount", 0))
+        except (TypeError, ValueError):
+            amount = math.nan
         if op in MONEY_OPS:
+            # nan would slip past every cap and then poison `spent`; a negative amount would refill the budget
+            if not (math.isfinite(amount) and amount > 0):
+                deny(f"invalid amount {params.get('amount')!r}")
             if g.per_txn_cap is not None and amount > g.per_txn_cap:
                 deny(f"amount {amount} over per-transaction cap {g.per_txn_cap}")
             if g.total_cap is not None and g.spent + amount > g.total_cap:

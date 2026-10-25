@@ -64,6 +64,22 @@ class Tests(unittest.TestCase):
     def test_tokens_not_stored_in_clear(self):
         self.assertNotIn(self.tok, self.hub.tokens)
 
+    def test_nan_amount_cannot_slip_past_or_poison_the_caps(self):
+        for amount in (float("nan"), "nan", float("inf"), "lots"):
+            with self.subTest(amount=amount), self.assertRaises(AccessError):
+                self.hub.call(self.tok, "transfer", now=NOW, amount=amount, payee="ConEd")
+        self.hub.call(self.tok, "transfer", now=NOW, amount=100, payee="ConEd")
+        with self.assertRaises(AccessError):  # total cap 150 still enforced after the junk attempts
+            self.hub.call(self.tok, "transfer", now=NOW, amount=60, payee="ConEd")
+
+    def test_negative_amount_cannot_refill_the_budget(self):
+        self.hub.call(self.tok, "transfer", now=NOW, amount=100, payee="ConEd")
+        with self.assertRaises(AccessError):
+            self.hub.call(self.tok, "transfer", now=NOW, amount=-1000, payee="ConEd")
+        self.assertEqual(self.bank.balances_["a1"], 900)
+        with self.assertRaises(AccessError):
+            self.hub.call(self.tok, "transfer", now=NOW, amount=60, payee="ConEd")
+
 
 if __name__ == "__main__":
     unittest.main()
