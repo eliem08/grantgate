@@ -1,16 +1,43 @@
-# agent-plaid
+<!-- sell-kit:start -->
+# GrantGate
 
-[![CI](https://github.com/eliem08/agent-plaid/actions/workflows/ci.yml/badge.svg)](https://github.com/eliem08/agent-plaid/actions/workflows/ci.yml)
+[![CI](https://github.com/eliem08/grantgate/actions/workflows/ci.yml/badge.svg)](https://github.com/eliem08/grantgate/actions/workflows/ci.yml)
 
-> **Plaid for agents** — approved access to banks, airlines and stores.
+> **Approved, capped access for agents to banks, airlines and stores.**
 
-For an agent to pay a bill, rebook a flight or check an order, it needs
-access to the user's accounts. Handing over passwords is insane. `agent-plaid`
-is the consent + connectivity layer: users link an institution once, grant
-an agent **scoped, capped, expiring** access, and every call goes through a
-proxy that enforces it and logs it.
+**Who it's for:** Developers building agents that act on a user's accounts.
 
-## What the MVP does
+**The problem:** Giving an agent your bank or airline login is all or nothing, with no caps, no expiry and no record of what it did.
+
+**What you get:** User-approved, scoped, capped and expiring grants enforced by a proxy, with an approved-payee list and a per-user access dashboard.
+
+## Quickstart
+
+Customers receive a release archive with the wheel and the examples. Python 3.10+ and no other dependencies.
+
+```bash
+pip install grantgate-0.1.0-py3-none-any.whl
+grantgate demo
+```
+
+## Pricing
+
+Every plan starts with a 14-day free trial. Prices in USD, billed monthly unless noted.
+
+| Plan | Price | Includes |
+|---|---|---|
+| **Developer** | $49 per month | 100 active grants; Caps, expiry and payee lists; Access dashboard |
+| **Growth** | $399 per month | 10,000 active grants; Custom connectors; Audit export |
+| **Enterprise** | $2,000 per month | Unlimited grants; On-prem proxy; SLA |
+
+To start a trial or buy a plan, email **sales@YOUR-DOMAIN.com**.
+
+## Licence
+
+Proprietary. Copyright (c) 2026 eliem08. All rights reserved. Use requires a paid plan or an active trial; see [LICENSE](LICENSE).
+<!-- sell-kit:end -->
+
+## What it does
 
 - **Institutions & connectors** with a uniform operation catalogue:
   - bank: `balances`, `transactions`, `transfer`
@@ -28,7 +55,7 @@ proxy that enforces it and logs it.
 
 ```bash
 pip install -e .
-agent-plaid demo
+grantgate demo
 ```
 
 ## Roadmap
@@ -49,8 +76,8 @@ ruff check . && ruff format --check .               # lint + format
 ```
 
 ```
-agent_plaid/core.py       domain logic (pure, importable, fully tested)
-agent_plaid/__main__.py   CLI (`agent-plaid ...` / `python -m agent_plaid ...`)
+grantgate/core.py       domain logic (pure, importable, fully tested)
+grantgate/__main__.py   CLI (`grantgate ...` / `python -m grantgate ...`)
 tests/                unit tests + generated CLI smoke tests
 ```
 

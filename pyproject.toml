@@ -3,31 +3,32 @@ requires = ["setuptools>=68"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "agent-plaid"
+name = "grantgate"
 version = "0.1.0"
-description = "Plaid for agents: approved access to banks, airlines and stores"
+description = "Approved, capped access for agents to banks, airlines and stores."
 readme = "README.md"
 requires-python = ">=3.10"
-license = { text = "MIT" }
+license = { text = "Proprietary" }
 authors = [{ name = "eliem08" }]
 dependencies = []
 classifiers = [
   "Programming Language :: Python :: 3",
-  "License :: OSI Approved :: MIT License",
+  "License :: Other/Proprietary License",
   "Operating System :: OS Independent",
+  "Private :: Do Not Upload",
 ]
 
 [project.optional-dependencies]
 dev = ["ruff>=0.6"]
 
 [project.scripts]
-agent-plaid = "agent_plaid.__main__:main"
+grantgate = "grantgate.__main__:main"
 
 [project.urls]
-Repository = "https://github.com/eliem08/agent-plaid"
+Repository = "https://github.com/eliem08/grantgate"
 
 [tool.setuptools]
-packages = ["agent_plaid"]
+packages = ["grantgate"]
 
 [tool.ruff]
 line-length = 120
@@ -38,5 +39,5 @@ select = ["E", "F", "W", "B", "UP", "I", "SIM", "RUF"]
 ignore = ["E501", "E741", "SIM108", "RUF001", "RUF002", "RUF003", "RUF022", "B905"]  # E501: ruff format owns line length
 
 [tool.ruff.lint.per-file-ignores]
-"agent_plaid/__init__.py" = ["F401", "F403"]
+"grantgate/__init__.py" = ["F401", "F403"]
 "tests/*" = ["E501"]

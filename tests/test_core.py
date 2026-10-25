@@ -1,7 +1,7 @@
 import unittest
 from datetime import datetime, timedelta
 
-from agent_plaid import AccessError, Hub, MockBank, MockStore
+from grantgate import AccessError, Hub, MockBank, MockStore
 
 NOW = datetime(2026, 10, 24, 12)
 

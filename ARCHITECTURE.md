@@ -1,4 +1,4 @@
-# Architecture — agent-plaid
+# Architecture — grantgate
 
 ## 1. Scope
 Consent and connectivity layer that gives agents scoped, capped, expiring access to a user's

@@ -11,7 +11,7 @@ import pathlib
 import tempfile
 import unittest
 
-from agent_plaid.__main__ import main
+from grantgate.__main__ import main
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 COMMANDS = [

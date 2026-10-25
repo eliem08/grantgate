@@ -47,7 +47,7 @@ def demo():
 
 
 def _run(argv=None):
-    ap = argparse.ArgumentParser(prog="agent-plaid")
+    ap = argparse.ArgumentParser(prog="grantgate")
     sub = ap.add_subparsers(dest="cmd", required=True)
     sub.add_parser("demo")
     ap.parse_args(argv)
