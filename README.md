@@ -46,7 +46,7 @@ Every plan starts with a 14-day free trial. Prices in USD, billed monthly unless
 | **Growth** | $399 per month | 10,000 active grants; Custom connectors; Audit export |
 | **Enterprise** | $2,000 per month | Unlimited grants; On-prem proxy; SLA |
 
-To start a trial or buy a plan, email **sales@YOUR-DOMAIN.com**.
+To start a trial or buy a plan, [request access](https://github.com/eliem08/grantgate/issues/new?title=GrantGate%20trial&labels=sales).
 
 ## Licence
 
