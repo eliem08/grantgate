@@ -1,0 +1,18 @@
+[
+ {
+  "op": "check",
+  "payload": {
+   "grant": {
+    "name": "bank-grant.json",
+    "content": "{\n  \"institution\": \"bank\",\n  \"scopes\": [\n    \"bank:read\",\n    \"bank:transfer\"\n  ],\n  \"per_txn_cap\": 100,\n  \"total_cap\": 150,\n  \"payees\": [\n    \"ConEd\"\n  ],\n  \"spent\": 120\n}\n"
+   },
+   "op": "transfer",
+   "amount": 20.0,
+   "payee": "ConEd"
+  }
+ },
+ {
+  "op": "demo",
+  "payload": {}
+ }
+]

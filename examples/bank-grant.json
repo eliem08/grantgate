@@ -1,0 +1,13 @@
+{
+  "institution": "bank",
+  "scopes": [
+    "bank:read",
+    "bank:transfer"
+  ],
+  "per_txn_cap": 100,
+  "total_cap": 150,
+  "payees": [
+    "ConEd"
+  ],
+  "spent": 120
+}

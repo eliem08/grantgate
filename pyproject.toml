@@ -23,6 +23,7 @@ dev = ["ruff>=0.6"]
 
 [project.scripts]
 grantgate = "grantgate.__main__:main"
+grantgate-web = "grantgate.web:main"
 
 [project.urls]
 Repository = "https://github.com/eliem08/grantgate"

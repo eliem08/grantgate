@@ -17,8 +17,21 @@ Customers receive a release archive with the wheel and the examples. Python 3.10
 
 ```bash
 pip install grantgate-0.1.0-py3-none-any.whl
+grantgate check examples/bank-grant.json --op transfer --amount 20 --payee ConEd
 grantgate demo
 ```
+
+## Web app and API
+
+Every command is also a JSON API endpoint and a browser form, served by the built-in web app.
+
+```bash
+grantgate-web --port 8000          # then open http://127.0.0.1:8000
+docker build -t grantgate . && docker run -p 8000:8000 -v grantgate-data:/data grantgate
+```
+
+Endpoints: `POST /api/demo`, `POST /api/check`, plus `GET /healthz` and `GET /api/spec` (machine-readable field list).
+Files are sent as `{"name": ..., "content": ...}`, folders as `{"files": [...]}` or a base64 zip.
 
 ## Pricing
 
