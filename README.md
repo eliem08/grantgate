@@ -41,26 +41,29 @@ Files are sent as `{"name": ..., "content": ...}`, folders as `{"files": [...]}`
 [![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/eliem08/grantgate)
 
 `render.yaml` (one click, above) and `fly.toml` (`fly launch --copy-config`) both run the Dockerfile with a persistent `/data` volume and a `/healthz` check.
+See `.env.example` (names only, no values) for the full variable list.
 To sell self-serve, set four variables and point a Stripe webhook at `https://<your-host>/billing/webhook` (events `checkout.session.completed` and `customer.subscription.deleted`):
 
 | Variable | Example |
 |---|---|
 | `STRIPE_SECRET_KEY` | `sk_live_...` |
 | `STRIPE_WEBHOOK_SECRET` | `whsec_...` |
-| `STRIPE_PRICES` | `team=price_123,business=price_456` |
+| `STRIPE_PRICES` | `developer=price_123,growth=price_456,enterprise=price_789` |
 | `PUBLIC_URL` | `https://grantgate.example.com` |
 
 Buyers pick a plan on `/pricing`, pay on Stripe Checkout and see their API key once on the success page. Cancelling the subscription revokes the key. A selling server always requires a key.
 
 ## Pricing
 
-Every plan starts with a 14-day free trial. Prices in USD, billed monthly unless noted.
+Every monthly plan starts with a 14-day free trial. Prices in USD, billed monthly unless noted.
 
 | Plan | Price | Includes |
 |---|---|---|
-| **Developer** | $49 per month | 100 active grants; Caps, expiry and payee lists; Access dashboard |
-| **Growth** | $399 per month | 10,000 active grants; Custom connectors; Audit export |
-| **Enterprise** | $2,000 per month | Unlimited grants; On-prem proxy; SLA |
+| **Developer** | $49 per month | Everything in this release: capped, expiring grants; Access dashboard |
+| **Growth** | $399 per month | Everything in Developer |
+| **Enterprise** | $2,000 per month | Everything in Developer; SLA |
+
+All plans unlock the same software in this release; higher tiers add licence scope and support, not gated features. Grant limits (100 / 10,000 / unlimited), custom connectors, audit export and on-prem proxy are roadmap, not enforced today — see [Roadmap](#roadmap) below.
 
 To start a trial or buy a plan, [request access](https://github.com/eliem08/grantgate/issues/new?title=GrantGate%20trial&labels=sales).
 
@@ -95,6 +98,7 @@ grantgate demo
 - Real connectors: open banking (PSD2 / FDX), airline NDC, Shopify / Amazon order APIs
 - Step-up approval: push notification for anything above a threshold
 - Signed receipts for each action (feeds agent-buyer-protection claims)
+- Plan grant limits enforced per plan (100 / 10,000 / unlimited); custom connectors program; audit export; on-prem proxy
 
 ## Development
 

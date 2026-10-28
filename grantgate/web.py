@@ -368,6 +368,7 @@ class Billing:
                 "mode": "subscription",
                 "line_items[0][price]": price,
                 "line_items[0][quantity]": "1",
+                "subscription_data[trial_period_days]": "14",
                 "metadata[plan]": plan,
                 "success_url": f"{self.public_url}/billing/success?session_id={{CHECKOUT_SESSION_ID}}",
                 "cancel_url": f"{self.public_url}/pricing",
@@ -567,6 +568,7 @@ def pricing_page(billing: Billing) -> str:
     return _shell(
         "Pricing",
         f"<h1>{e(SPEC['name'])} plans</h1><p>{e(SPEC['tagline'])}</p>{cards}"
+        "<p>Every monthly plan starts with a 14-day free trial.</p>"
         "<p><small>Payments by Stripe. Your API key appears right after checkout.</small></p>",
     )
 
