@@ -35,10 +35,12 @@ Every denial is audited with its reason, and the dashboard counts denials per gr
   which catches mis-grants early.
 - **Spend is recorded only after the connector succeeds.** A failed transfer doesn't eat into caps.
 
-## 5. Production architecture
-A proxy service (Go) with Postgres (links, grants, spend ledger) and Redis (token hash → grant
-cache, invalidated on revoke). Connector workers hold institution credentials in a vault (per-user
-OAuth tokens from open-banking flows). Step-up approvals over threshold go out via push.
+## 5. Future production architecture (not shipped)
+Not shipped in this release: a proxy service (Go) with Postgres (links, grants, spend ledger)
+and Redis (token hash → grant cache, invalidated on revoke). Connector workers hold institution
+credentials in a vault (per-user OAuth tokens from open-banking flows). Step-up approvals over
+threshold go out via push. This release ships the mock connectors, the enforcing proxy, the
+audit log and the dashboard only.
 
 ## 6. Security
 Link credentials never touch agents. Least privilege by default (read-only presets). Mutual TLS
