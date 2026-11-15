@@ -17,8 +17,9 @@ Customers receive a release archive with the wheel and the examples. Python 3.10
 
 ```bash
 pip install grantgate-0.1.0-py3-none-any.whl
-grantgate check examples/bank-grant.json --op transfer --amount 20 --payee ConEd
-grantgate demo
+grantgate institution-add mybank --kind bank --store grantgate.json
+grantgate link ana mybank acct-001 --store grantgate.json
+grantgate grant ana shopper-bot link-1 --scopes bank:read bank:transfer --per-txn-cap 100 --total-cap 150 --payee landlord --store grantgate.json
 ```
 
 ## Web app and API
@@ -33,7 +34,7 @@ docker build -t grantgate . && docker run -p 8000:8000 -e API_KEYS=sk_... -v gra
 
 Every API call needs `Authorization: Bearer <key>` once any key exists; a server on a public address refuses to start without one. Calls are rate-limited per key (60/min, `--rate`) and metered: `grantgate-web usage` prints calls per key for billing.
 
-Endpoints: `POST /api/demo`, `POST /api/check`, plus `GET /healthz` and `GET /api/spec` (machine-readable field list).
+Endpoints: `POST /api/demo`, `POST /api/check`, `POST /api/institution-add`, `POST /api/link`, `POST /api/grant`, `POST /api/call`, `POST /api/revoke`, `POST /api/dashboard`, `POST /api/audit`, plus `GET /healthz` and `GET /api/spec` (machine-readable field list).
 Files are sent as `{"name": ..., "content": ...}`, folders as `{"files": [...]}` or a base64 zip.
 
 ## Deploy and sell

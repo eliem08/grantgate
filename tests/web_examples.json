@@ -1,5 +1,51 @@
 [
  {
+  "op": "institution-add",
+  "payload": {
+   "name": "mybank",
+   "kind": "bank",
+   "url": ""
+  }
+ },
+ {
+  "op": "link",
+  "payload": {
+   "user": "ana",
+   "institution": "mybank",
+   "account": "acct-001"
+  }
+ },
+ {
+  "op": "grant",
+  "payload": {
+   "user": "ana",
+   "agent": "shopper-bot",
+   "link_id": "link-1",
+   "scopes": [
+    "bank:read",
+    "bank:transfer"
+   ],
+   "per_txn_cap": 100.0,
+   "total_cap": 150.0,
+   "payee": [
+    "landlord"
+   ],
+   "days": 30
+  }
+ },
+ {
+  "op": "dashboard",
+  "payload": {
+   "user": "ana"
+  }
+ },
+ {
+  "op": "audit",
+  "payload": {
+   "grant_id": "grant-2"
+  }
+ },
+ {
   "op": "check",
   "payload": {
    "grant": {

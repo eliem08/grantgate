@@ -48,8 +48,9 @@
     <h2>Quickstart</h2>
     <p>Python 3.10+, no other dependencies. Your release archive includes the wheel and examples.</p>
     <pre><code>pip install grantgate-0.1.0-py3-none-any.whl
-grantgate check examples/bank-grant.json --op transfer --amount 20 --payee ConEd
-grantgate demo</code></pre>
+grantgate institution-add mybank --kind bank --store grantgate.json
+grantgate link ana mybank acct-001 --store grantgate.json
+grantgate grant ana shopper-bot link-1 --scopes bank:read bank:transfer --per-txn-cap 100 --total-cap 150 --payee landlord --store grantgate.json</code></pre>
   </section>
   <section>
     <h2>Pricing</h2>
