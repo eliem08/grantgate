@@ -55,15 +55,18 @@ Buyers pick a plan on `/pricing`, pay on Stripe Checkout and see their API key o
 
 ## Pricing
 
-Every plan starts with a 14-day free trial. Prices in USD, billed monthly unless noted.
+Monthly plans start with a 14-day free trial. Prices in USD, billed monthly unless noted.
 
 | Plan | Price | Includes |
 |---|---|---|
 | **Developer** | $49 per month | 100 active grants; Caps, expiry and payee lists; Access dashboard |
-| **Growth** | $399 per month | 10,000 active grants; Custom connectors; Audit export |
-| **Enterprise** | $2,000 per month | Unlimited grants; On-prem proxy; SLA |
+| **Growth** | $399 per month | 10,000 active grants; Signed forwarding to your backend; Audit log per grant |
+| **Enterprise** | $2,000 per month | Unlimited grants; Self-hosted gateway; SLA |
 
 To start a trial or buy a plan, [request access](https://github.com/eliem08/grantgate/issues/new?title=GrantGate%20trial&labels=sales).
+
+Plan note: every plan runs the same software, and every API key unlocks all of it. Seat, agent and volume
+limits are licence terms; the code does not enforce them. Support, SLA and done-for-you items are services.
 
 ## Licence
 
