@@ -1,4 +1,4 @@
-"""GrantGate: Approved, capped access for agents to banks, airlines and stores."""
+"""GrantGate: Approved, capped access for agents to people's accounts."""
 
 from .core import *
 

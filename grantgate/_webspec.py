@@ -2,7 +2,7 @@
 
 SPEC = {
     "name": "GrantGate",
-    "tagline": "Approved, capped access for agents to banks, airlines and stores.",
+    "tagline": "Approved, capped access for agents to people's accounts.",
     "cli": "grantgate",
     "state": {},
     "ops": [

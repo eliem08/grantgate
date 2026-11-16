@@ -3,13 +3,13 @@
 
 [![CI](https://github.com/eliem08/grantgate/actions/workflows/ci.yml/badge.svg)](https://github.com/eliem08/grantgate/actions/workflows/ci.yml)
 
-> **Approved, capped access for agents to banks, airlines and stores.**
+> **Approved, capped access for agents to people's accounts.**
 
 **Who it's for:** Developers building agents that act on a user's accounts.
 
 **The problem:** Giving an agent your bank or airline login is all or nothing, with no caps, no expiry and no record of what it did.
 
-**What you get:** User-approved, scoped, capped and expiring grants enforced by a proxy, with an approved-payee list and a per-user access dashboard.
+**What you get:** User-approved, scoped, capped and expiring grants enforced by a gateway that forwards only approved calls to your backend, with an approved-payee list, an audit log and a per-user access dashboard.
 
 ## Quickstart
 
@@ -75,11 +75,13 @@ Proprietary. Copyright (c) 2026 eliem08. All rights reserved. Use requires a pai
 
 ## What it does
 
-- **Institutions & connectors** with a uniform operation catalogue:
+- **Institutions** behind the gateway, with a uniform operation catalogue. No bank, airline or
+  store connector ships: approved calls are forwarded, HMAC-signed, to an https backend you run
+  (or decided only, with no URL). The catalogue:
   - bank: `balances`, `transactions`, `transfer`
   - airline: `search_flights`, `book`, `change_booking`
   - store: `order_status`, `checkout`, `return_item`
-- **Link flow**: user links an account at an institution (mock credential exchange)
+- **Link flow**: user links an account reference at an institution
 - **Grants**: user grants an agent a link with scopes (`bank:read`, `bank:transfer`…),
   per-transaction and total spend caps, payee allowlist, expiry
 - **Tokens**: opaque random access tokens, stored only as SHA-256 hashes
