@@ -473,4 +473,24 @@ SPEC = {
             "id": "audit",
         },
     ],
+    "plans": [
+        {
+            "key": "developer",
+            "name": "Developer",
+            "price": "$49 per month",
+            "features": ["100 active grants", "Caps, expiry and payee lists", "Access dashboard"],
+        },
+        {
+            "key": "growth",
+            "name": "Growth",
+            "price": "$399 per month",
+            "features": ["10,000 active grants", "Signed forwarding to your backend", "Audit log per grant"],
+        },
+        {
+            "key": "enterprise",
+            "name": "Enterprise",
+            "price": "$2,000 per month",
+            "features": ["Unlimited grants", "Self-hosted gateway", "SLA"],
+        },
+    ],
 }
