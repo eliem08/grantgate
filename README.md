@@ -9,7 +9,7 @@
 
 **The problem:** Giving an agent your bank or airline login is all or nothing, with no caps, no expiry and no record of what it did.
 
-**What you get:** User-approved, scoped, capped and expiring grants enforced by a gateway that forwards only approved calls to your backend, with an approved-payee list, an audit log and a per-user access dashboard.
+**What you get:** User-approved, scoped, capped and expiring grants enforced by a gateway that forwards only approved calls to your backend, with an approved-payee list, an audit log and a per-user access dashboard; the same grant approves or declines real card payments in real time through Stripe Issuing.
 
 ## Quickstart
 
@@ -34,7 +34,7 @@ docker build -t grantgate . && docker run -p 8000:8000 -e API_KEYS=sk_... -v gra
 
 Every API call needs `Authorization: Bearer <key>` once any key exists; a server on a public address refuses to start without one. Calls are rate-limited per key (60/min, `--rate`) and metered: `grantgate-web usage` prints calls per key for billing.
 
-Endpoints: `POST /api/demo`, `POST /api/check`, `POST /api/institution-add`, `POST /api/link`, `POST /api/grant`, `POST /api/call`, `POST /api/revoke`, `POST /api/dashboard`, `POST /api/audit`, plus `GET /healthz` and `GET /api/spec` (machine-readable field list).
+Endpoints: `POST /api/demo`, `POST /api/check`, `POST /api/institution-add`, `POST /api/link`, `POST /api/grant`, `POST /api/call`, `POST /api/revoke`, `POST /api/card-attach`, `POST /api/card-detach`, `POST /api/dashboard`, `POST /api/audit`, plus `GET /healthz` and `GET /api/spec` (machine-readable field list).
 Files are sent as `{"name": ..., "content": ...}`, folders as `{"files": [...]}` or a base64 zip.
 
 ## Deploy and sell
@@ -90,12 +90,24 @@ Proprietary. Copyright (c) 2026 eliem08. All rights reserved. Use requires a pai
 - **Proxy**: `call(token, op, **params)` → scope check, cap check, expiry,
   revocation → forwards to the connector → audit log
 - **Dashboard**: what each agent can do and has done; one-click revoke
+- **Real card payments, decided by the grant (Stripe Issuing)**: give the agent a Stripe Issuing card and
+  `card-attach GRANT --card ic_...`. Point Issuing's real-time authorization webhook at
+  `https://<your-host>/stripe/issuing`.
+  - Every payment the card attempts is approved or declined by the grant's rules: revoked, expired, the
+    per-payment cap, the total cap and the approved payees (matched to the merchant name or network id).
+  - It answers inside Stripe's 2-second window, with the `Stripe-Version` header Stripe requires.
+  - Approved amounts count towards the total cap, and every decision is in `audit`.
+  - Requests without a valid `Stripe-Signature` (signed with `ISSUING_WEBHOOK_SECRET`) are refused.
+  - Refunds are not credited back to the cap, which errs on the strict side.
+  - Tested against signed requests built to Stripe's documented format, not yet against a live Issuing
+    account. Issuing itself needs Stripe's approval for your business.
 
 ## Quickstart
 
 ```bash
 pip install -e .
 grantgate demo
+grantgate card-attach grant-2 --card ic_1Abc...   # the grant now decides that card's payments
 ```
 
 ## Roadmap

@@ -11,6 +11,7 @@ import ipaddress
 import itertools
 import json
 import os
+import re
 import secrets
 import socket
 import urllib.error
@@ -20,7 +21,8 @@ from datetime import datetime, timedelta
 
 from .core import MONEY_OPS, OP_SCOPES, AccessError, Connector, Grant, Hub
 
-OPS = ("institution-add", "link", "grant", "call", "revoke", "dashboard", "audit")
+OPS = ("institution-add", "link", "grant", "call", "revoke", "card-attach", "card-detach", "dashboard", "audit")
+CARD_RE = re.compile(r"^ic_[A-Za-z0-9]{6,}$")
 KINDS = ("bank", "airline", "store")
 
 
@@ -110,6 +112,8 @@ def load(path: str, post=_post) -> Hub:
         g["expires"] = datetime.fromisoformat(g["expires"])
         hub.grants[gid] = Grant(**g)
     hub.tokens = doc.get("tokens", {})
+    hub.cards = dict(doc.get("cards", {}))  # Stripe Issuing card id -> grant id
+    hub.card_currency = dict(doc.get("card_currency", {}))
     hub._ids = itertools.count(int(doc.get("next_id", 1)))
     hub._key, hub._post = key, post
     return hub
@@ -131,6 +135,8 @@ def save(hub: Hub, path: str):
         "links": hub.links,
         "grants": grants,
         "tokens": hub.tokens,  # sha256 of each token, never the token
+        "cards": getattr(hub, "cards", {}),
+        "card_currency": getattr(hub, "card_currency", {}),
         "next_id": next_id,
     }
     tmp = f"{path}.tmp"
@@ -165,6 +171,12 @@ def add_ops(sub):
     p.add_argument("--payee")
     p.add_argument("--param", action="append", default=[], help="extra parameter name=value (repeatable)")
     sub.add_parser("revoke", help="a user withdraws a grant, effective immediately").add_argument("grant_id")
+    p = sub.add_parser("card-attach", help="let a grant approve or decline a Stripe Issuing card's payments")
+    p.add_argument("grant_id")
+    p.add_argument("--card", required=True, help="the Stripe Issuing card id, ic_...")
+    p.add_argument("--currency", default="usd", help="the card's currency; others are declined")
+    p = sub.add_parser("card-detach", help="stop a grant deciding a card's payments (the card is then declined)")
+    p.add_argument("--card", required=True)
     sub.add_parser("dashboard", help="everything a user has granted, with spend and denials").add_argument("user")
     sub.add_parser("audit", help="every call made under a grant").add_argument("grant_id")
     for name in OPS:
@@ -231,6 +243,21 @@ def _run(hub: Hub, a, resolve) -> int:
         _grant(hub, a.grant_id)
         hub.revoke(a.grant_id)
         print(f"{a.grant_id} revoked")
+    elif c == "card-attach":
+        _grant(hub, a.grant_id)
+        if not CARD_RE.match(a.card):
+            raise AccessError("--card must be a Stripe Issuing card id like ic_1Abc...")
+        if not re.fullmatch(r"[a-z]{3}", a.currency.lower()):
+            raise AccessError("--currency must be a three-letter code like usd")
+        hub.cards[a.card] = a.grant_id
+        hub.card_currency[a.card] = a.currency.lower()
+        print(f"{a.card} now follows {a.grant_id}: caps, payees, expiry and revocation decide each payment")
+    elif c == "card-detach":
+        if a.card not in hub.cards:
+            raise AccessError(f"{a.card} is not attached")
+        gid = hub.cards.pop(a.card)
+        hub.card_currency.pop(a.card, None)
+        print(f"{a.card} detached from {gid}; its payments are now declined")
     elif c == "dashboard":
         rows = hub.dashboard(a.user)
         for r in rows:
